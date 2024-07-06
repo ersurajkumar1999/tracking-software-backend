@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { DATABASE_URL: url } = require('./config');
+const { DATABASE_URL: url } = require('../config/index');
 
 const connectToDB = async () => {
   try {

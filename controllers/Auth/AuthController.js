@@ -1,14 +1,14 @@
 const validator = require('validator');
 const jwt = require("jsonwebtoken");
 const useragent = require('useragent');
-const { hashedPassword, comparePassword } = require("../helper/PasswordManager");
-const { errorResponseMessage, successResponseMessage } = require("../helper/responseMessage");
-const { findUserByEmail, createUser, generateAccountNumber, generateOTP, findUserByUserName, createDummyUser } = require("../services/userServices");
-const { createProfile } = require('../services/profileServices');
-const { validateLogin } = require('../validations/Login');
-const { createSession } = require('../services/SessionServices');
-const { sendMail } = require('../helper/emailServices');
-const verify = require('../utilities/verify-token');
+const { hashedPassword, comparePassword } = require("../../helper/PasswordManager");
+const { errorResponseMessage, successResponseMessage } = require("../../helper/responseMessage");
+const { findUserByEmail, createUser, generateAccountNumber, generateOTP, findUserByUserName, createDummyUser } = require("../../services/userServices");
+const { createProfile } = require('../../services/profileServices');
+const { validateLogin } = require('../../validations/Login');
+const { createSession } = require('../../services/SessionServices');
+const { sendMail } = require('../../helper/emailServices');
+const verify = require('../../config/verify-token');
 const slugify = require('slugify');
 
 const doLogin = async (req, res) => {

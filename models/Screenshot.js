@@ -13,6 +13,10 @@ const screenshotSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    memo:{
+        type:String,
+        default:null
+    },
     assetId: {
         type: String,
         required: true

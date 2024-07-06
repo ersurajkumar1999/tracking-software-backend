@@ -4,7 +4,7 @@ const {
     successResponseMessage
 } = require("../helper/responseMessage.js");
 const { checkImageType } = require("../helper/ImageValidation.js");
-const { IMAGE_KIT } = require("../utilities/config.js");
+const { IMAGE_KIT } = require("../config");
 const { createImage } = require('../services/imageService.js');
 const { uploadToCloudinary } = require('../helper/cloudinaryHelper.js');
 const { createScreenshot } = require('../services/screenshotServices.js');
@@ -104,7 +104,7 @@ const screenshotUploadold = async (req, res) => {
 };
 const screenshotUpload = async (req, res) => {
     try {
-        const { activity } = req.body;
+        const { activity, memo } = req.body;
         const userId = req.user.id;
         const file = req.file;
         const folderName = req.body.folderName || 'screenshots'; // Dynamic folder name
@@ -112,28 +112,21 @@ const screenshotUpload = async (req, res) => {
         if (!file) {
             return res.status(400).json({ message: 'Please select an image' });
         }
-
+        // const fileName = 
         const uploadResult = await uploadToCloudinary(file.buffer, file.originalname.split('.')[0], folderName);
         
         if (!uploadResult || !uploadResult.secure_url) {
             throw new Error('Failed to upload image to Cloudinary');
         }
-        // const screenshot = await createScreenshot({
-        //     user: userId,
-        //     image: uploadResult.secure_url, // Cloudinary URL,
-        //     assetId: uploadResult.asset_id,
-        //     size: uploadResult.bytes,
-        //     activityLevel: activity || 0
-        // })
-        // const newScreenshot = new Screenshot({
-        //     user: userId,
-        //     image: uploadResult.secure_url, // Cloudinary URL
-        //     timestamp: new Date()
-        // });
-
-        // await newScreenshot.save();
-
-        return res.status(200).json({ message: 'Successfully uploaded file', uploadResult });
+        const screenshot = await createScreenshot({
+            user: userId,
+            image: uploadResult.secure_url, // Cloudinary URL,
+            assetId: uploadResult.asset_id,
+            size: uploadResult.bytes,
+            activityLevel: activity || 0,
+            memo: memo || "Working on Today Task!"
+        })
+        return res.status(200).json({ message: 'Successfully uploaded file', screenshot });
     } catch (error) {
         console.log("error", error);
         return res.status(500).json({ message: 'Something went wrong: ' + error.message });

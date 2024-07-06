@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const verify = require("../utilities/verify-token");
+const verify = require("../config/verify-token");
 const { errorResponseMessage } = require("../helper/responseMessage");
 
 const auth = async (req, res, next) => {
