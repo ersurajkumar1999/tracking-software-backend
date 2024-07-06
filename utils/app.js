@@ -5,7 +5,7 @@ const i18n = require('../config/i18n-setup');
 const setLocale = require('../middlewares/setLocale');
 
 
-const authRoutes = require('../routes/AuthRoutes');
+const authRoutes = require('../routes/authRoutes');
 // const sessionRoutes = require('../routes/sessionRoutes');
 // const userRoutes = require('../routes/userRoutes');
 // const commonRoutes = require('../routes/commonRoutes');
