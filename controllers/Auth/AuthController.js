@@ -15,10 +15,7 @@ const doLogin = async (req, res) => {
     try {
         // Form validation
         const { email, password } = req.body;
-        const { errors, isValid } = await validateLogin(req.body);
-        if (!isValid) {
-            return successResponseMessage(res, "Validation Error", errors);
-        }
+        
         // return successResponseMessage(res, "Login successfully!1111111111", res1);
         // return sendMail(req, res);
         if (validator.isEmpty(email)) {
