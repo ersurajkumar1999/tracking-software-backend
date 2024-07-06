@@ -20,7 +20,7 @@ const TASK_STATUS = ['NOT_STARTED', 'IN_PROGRESS', 'REVIEW', 'COMPLETED', 'REOPE
 
 // tasks status
 const PROJECT_STATUS = ['NOT STARTED', 'IN PROGRESS', 'COMPLETED', 'ON HOLD'];
-employmentType
+
 const EMPLOYEE_TYPES = ["USER", "EMPLOYEE", "MANAGER", "ADMIN"];
 // Exporting all types together
 module.exports = {
