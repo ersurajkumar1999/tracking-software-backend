@@ -7,7 +7,9 @@ const { checkImageType } = require("../helper/ImageValidation.js");
 const { IMAGE_KIT } = require("../config");
 const { createImage } = require('../services/imageService.js');
 const { uploadToCloudinary } = require('../helper/cloudinaryHelper.js');
-const { createScreenshot } = require('../services/screenshotServices.js');
+const { createScreenshot, totalScreenshots, getScreenshots } = require('../services/screenshotServices.js');
+const { totalUsers, getUsers, findUserById } = require('../services/userServices.js');
+const { ROLES } = require('../helper/Constants.js');
 
 const imageUpload111111 = async (req, res) => {
     try {
@@ -114,7 +116,7 @@ const screenshotUpload = async (req, res) => {
         }
         // const fileName = 
         const uploadResult = await uploadToCloudinary(file.buffer, file.originalname.split('.')[0], folderName);
-        
+
         if (!uploadResult || !uploadResult.secure_url) {
             throw new Error('Failed to upload image to Cloudinary');
         }
@@ -165,4 +167,39 @@ const deleteScreenshot = async (req, res) => {
         return errorResponseMessage(res, "Something went wrong: " + error.message);
     }
 };
-module.exports = { screenshotUpload, deleteScreenshot }
+const getAllScreenshots = async (req, res) => {
+    const page = parseInt(req.body.page) || 1;
+    const pageSize = parseInt(req.body.pageSize) || 10;
+
+    const skip = (page - 1) * pageSize;
+    const userId = req.user.id;
+
+    const userData = await findUserById(userId)
+
+    try {
+        let users = null;
+        if (userData.userType == ROLES[0]) // ROLES[0] = USER, ROLES[3] =  ADMIN 
+        {
+            // get by user Id
+            totalItems = await totalScreenshots(userId);
+            users = await getScreenshots(userId, skip, pageSize);
+        } else {
+            // Get All Data;
+            totalItems = await totalScreenshots();
+            users = await getScreenshots(skip, pageSize);
+        }
+
+        res.json({
+            data: users,
+            page,
+            pageSize,
+            totalItems,
+            totalPages: Math.ceil(totalItems / pageSize),
+            status: true,
+            message: "get all users"
+        });
+    } catch (error) {
+        return errorResponseMessage(res, "Something went wrong: " + error.message);
+    }
+}
+module.exports = { screenshotUpload, deleteScreenshot, getAllScreenshots }

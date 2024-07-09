@@ -11,7 +11,12 @@ const postSchema = new mongoose.Schema({
         trim: true,
         required: true,
     },
-    images: [{ type: mongoose.Schema.Types.ObjectId, ref: "Image" }],
+    type: {
+        type: String,
+        enum: ['IMAGE', 'VIDEO'],
+        default:'IMAGE'
+    },
+    media: [{ type: mongoose.Schema.Types.ObjectId, ref: "Image" }],
     // images: {
     //     type: [String], // Array of strings
     //     trim: true,

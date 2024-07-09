@@ -5,11 +5,11 @@ const { createLike, findLikeById } = require("../services/LikeServices");
 const create = async (req, res) => {
     try {
         const { titel, content, images } = req.body
-        const imageIds = images.map(image => image._id);
+        const imageIds = (images && images.length > 0) ? images.map(image => image._id) : [];
         const userId = req.user.id;
-        // if (!userId) {
-        //     return errorResponseMessage(res, "Something went wrong User!");
-        // }
+        if (!userId) {
+            return errorResponseMessage(res, "Something went wrong User!");
+        }
         // if (userId) {
         //     return errorResponseMessage(res,userId);
         // }
@@ -20,7 +20,7 @@ const create = async (req, res) => {
             return errorResponseMessage(res, "Content is required!");
         }
         const post = await createPost({
-            titel, content, images:imageIds, createdBY: userId
+            titel, content, media: imageIds, createdBY: userId
         })
         const updatePost = await findPostById(post._id);
         return successResponseMessage(res, "Post created successfully!", updatePost);
@@ -87,7 +87,7 @@ const postLike = async (req, res) => {
         if (!postId) {
             return errorResponseMessage(res, "Post Id is required!");
         }
-        const like = await createLike({postId, likedBy:userId});
+        const like = await createLike({ postId, likedBy: userId });
         const result = await Post.findByIdAndUpdate(postId, { $push: { likes: like._id } }, { new: true });
         if (!result) {
             return errorResponseMessage(res, "Post not found", 404);
@@ -98,7 +98,21 @@ const postLike = async (req, res) => {
         return errorResponseMessage(res, "Something went wrong: " + error.message);
     }
 };
+const getPostById = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        if (!postId) {
+            return errorResponseMessage(res, "Post Id is required!");
+        }
+        const post = await findPostById(postId);
+
+        return successResponseMessage(res, "Post Get successfully!", post);
+    } catch (error) {
+        return errorResponseMessage(res, "Something went wrong: " + error.message);
+    }
+};
+
 module.exports = {
     create, getPosts,
-    postLike, postUnLike
+    postLike, postUnLike, getPostById
 }

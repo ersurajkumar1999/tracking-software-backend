@@ -31,6 +31,14 @@ const EducationDetailsSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
+    document: {
+        type: String,
+        default: null,
+    },
+    isPublic: {
+        type: Boolean,
+        default: true
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

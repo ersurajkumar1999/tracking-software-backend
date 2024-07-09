@@ -1,6 +1,19 @@
 const mongoose = require("mongoose");
 const { getAllGenders } = require("../helper/GenderHelper");
 
+const Schema = mongoose.Schema;
+const skillSchema = new Schema({
+    skillId: {
+        type: Schema.Types.ObjectId,  // Example: MongoDB ObjectId or any unique identifier for skills
+        ref: 'Skill',  // Reference to a Skills collection or schema
+        required: true
+    },
+    level: {
+        type: String,  // Example: Beginner, Intermediate, Advanced
+        required: true
+    }
+});
+
 const profileSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -27,6 +40,8 @@ const profileSchema = new mongoose.Schema({
         trim: true,
         default: null
     },
+    bio: { type: String },
+    website: { type: String },
     about: {
         type: String,
         trim: true,
@@ -80,7 +95,33 @@ const profileSchema = new mongoose.Schema({
         type: String,
         trim: true,
         default: null
-    }
+    },
+    isPublic: {
+        type: Boolean,
+        default: true
+    },
+    isEducationPublic: {
+        type: Boolean,
+        default: true
+    },
+    isExperiencePublic: {
+        type: Boolean,
+        default: true
+    },
+    isSocialMediaPublic: {
+        type: Boolean,
+        default: true
+    },
+    isSkillsPublic: {
+        type: Boolean,
+        default: true
+    },
+    isAddresPublic: {
+        type: Boolean,
+        default: true
+    },
+    hobbies: [{ type: String }],
+    skills: [skillSchema], 
 }, { timestamps: true });
 
 module.exports = mongoose.model("Profile", profileSchema);

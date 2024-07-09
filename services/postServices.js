@@ -3,8 +3,8 @@ const postModel = require("../models/Post");
 const createPost = async (post) => {
     return await postModel.create(post);
 }
-const findPostById = async (userId) => {
-    return await postModel.findOne({ _id: userId })
+const findPostById = async (postId) => {
+    return await postModel.findOne({ _id: postId })
         .populate('createdBY')
         .populate({
             path: 'createdBY',
@@ -15,7 +15,7 @@ const findPostById = async (userId) => {
             }
         })
         .populate({
-            path: 'images',
+            path: 'media',
             select: 'imagePath imageId', // Select only the imagePath field from the Image model
             // match: { status: true, isDeleted: false } // Optionally, you can add conditions to filter images
         });
@@ -41,7 +41,7 @@ const getAllPosts = async (skip, pageSize) => {
             }
         })
         .populate({
-            path: 'images',
+            path: 'media',
             select: 'imageUrl imageId', // Select only the imagePath field from the Image model
             // match: { status: true, isDeleted: false } // Optionally, you can add conditions to filter images
         })

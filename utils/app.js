@@ -11,6 +11,7 @@ const authRoutes = require('../routes/authRoutes');
 // const commonRoutes = require('../routes/commonRoutes');
 
 const screenshotRoutes = require('../routes/screenshotRoutes');
+const postRoutes = require('../routes/postRoutes');
 
 // const countryRoutes = require('./routes/countryRoutes');
 // const stateRoutes = require('./routes/stateRoutes');
@@ -49,6 +50,7 @@ app.use('/api/v1/auth', authRoutes);
 // // common routes for "USER", "EMPLOYEE", "MANAGER", "ADMIN"
 // app.use('/api/v1', commonRoutes);
 app.use('/api/v1/screenshot/', screenshotRoutes);
+app.use('/api/v1/post/', postRoutes);
 
 
 // app.use('/api/v1/category', categoryRoutes);

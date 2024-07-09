@@ -71,22 +71,22 @@ const UserSchema = new mongoose.Schema({
     token: {
         type: String,
     },
-    projects: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Project'
-    }],
-    tasks: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Task'
-    }],
-    experiences: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ExperienceDetails'
-    }],
-    educations: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'EducationDetails'
-    }]
+    // projects: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Project'
+    // }],
+    // tasks: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Task'
+    // }],
+    // experiences: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'ExperienceDetails'
+    // }],
+    // educations: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'EducationDetails'
+    // }]
 }, { timestamps: true });
 
 

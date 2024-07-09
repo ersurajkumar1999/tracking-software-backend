@@ -51,6 +51,14 @@ const experienceSchema = new mongoose.Schema({
         trim: true,
         default: null
     },
+    document: {
+        type: String,
+        default: null,
+    },
+    isPublic: {
+        type: Boolean,
+        default: true
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
