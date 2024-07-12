@@ -7,7 +7,7 @@ const setLocale = require('../middlewares/setLocale');
 
 const authRoutes = require('../routes/authRoutes');
 // const sessionRoutes = require('../routes/sessionRoutes');
-// const userRoutes = require('../routes/userRoutes');
+const userRoutes = require('../routes/userRoutes');
 // const commonRoutes = require('../routes/commonRoutes');
 
 const screenshotRoutes = require('../routes/screenshotRoutes');
@@ -42,7 +42,7 @@ app.use(setLocale);
 
 app.use('/api/v1/auth', authRoutes);
 // app.use('/api/v1', sessionRoutes);
-// app.use('/api/v1', userRoutes);
+app.use('/api/v1', userRoutes);
 // app.use('/api/v1', imageRoutes);
 // app.use('/api/v1', attendanceRoutes);
 // app.use('/api/v1/break', breakRoutes);

@@ -10,6 +10,7 @@ const { uploadToCloudinary } = require('../helper/cloudinaryHelper.js');
 const { createScreenshot, totalScreenshots, getScreenshots } = require('../services/screenshotServices.js');
 const { totalUsers, getUsers, findUserById } = require('../services/userServices.js');
 const { ROLES } = require('../helper/Constants.js');
+const { getLastActivityLog, createActivityLog, updateActivityLog } = require('../services/ActivityLogServices.js');
 
 const imageUpload111111 = async (req, res) => {
     try {
@@ -104,6 +105,7 @@ const screenshotUploadold = async (req, res) => {
         return errorResponseMessage(res, 'Something went wrong: ' + error.message);
     }
 };
+
 const screenshotUpload = async (req, res) => {
     try {
         const { activity, memo } = req.body;
@@ -134,6 +136,7 @@ const screenshotUpload = async (req, res) => {
         return res.status(500).json({ message: 'Something went wrong: ' + error.message });
     }
 };
+
 const deleteScreenshot = async (req, res) => {
     try {
         // const imageId = req.params?.imageId;
@@ -202,4 +205,40 @@ const getAllScreenshots = async (req, res) => {
         return errorResponseMessage(res, "Something went wrong: " + error.message);
     }
 }
-module.exports = { screenshotUpload, deleteScreenshot, getAllScreenshots }
+
+const createLog = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { startMemo, endMemo, activityLogId } = req.body;
+        const endTime = new Date();
+        if (!startMemo) {
+            return errorResponseMessage(res, "Start Memo field is required");
+        }
+        let activityLog;
+        if (activityLogId) {
+            activityLog = await updateActivityLog(
+                activityLogId,
+                { startMemo, endMemo, endTime: endTime },
+            );
+
+        } else {
+            activityLog = await createActivityLog({
+                user: userId,
+                startMemo,
+            })
+        }
+        return successResponseMessage(res, 'Activity Log Created', activityLog);
+    } catch (error) {
+        return errorResponseMessage(res, "Something went wrong: " + error.message);
+    }
+}
+const getLastLog = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const lastActivityLog = await getLastActivityLog(userId)
+        return successResponseMessage(res, 'Last Activity Log', lastActivityLog);
+    } catch (error) {
+        return errorResponseMessage(res, "Something went wrong: " + error.message);
+    }
+}
+module.exports = { screenshotUpload, deleteScreenshot, getAllScreenshots, createLog, getLastLog }

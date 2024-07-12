@@ -5,6 +5,11 @@ const screenshotSchema = mongoose.Schema({
         ref: 'User',
         required: true
     },
+    activityLog: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ActivityLog',
+        required: true
+    },
     image: {
         type: String,
         required: true
@@ -13,9 +18,9 @@ const screenshotSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
-    memo:{
-        type:String,
-        default:null
+    memo: {
+        type: String,
+        default: null
     },
     assetId: {
         type: String,
@@ -37,7 +42,5 @@ const screenshotSchema = mongoose.Schema({
         type: Date,
         default: null
     }
-}, {
-    timestamps: true,
-});
+}, { timestamps: true });
 module.exports = mongoose.model("Screenshot", screenshotSchema);
