@@ -7,10 +7,10 @@ const { checkImageType } = require("../helper/ImageValidation.js");
 const { IMAGE_KIT } = require("../config");
 const { createImage } = require('../services/imageService.js');
 const { uploadToCloudinary } = require('../helper/cloudinaryHelper.js');
-const { createScreenshot, totalScreenshots, getScreenshots } = require('../services/screenshotServices.js');
-const { totalUsers, getUsers, findUserById } = require('../services/userServices.js');
+const { createScreenshot } = require('../services/screenshotServices.js');
+const { findUserById } = require('../services/userServices.js');
 const { ROLES } = require('../helper/Constants.js');
-const { getLastActivityLog, createActivityLog, updateActivityLog } = require('../services/ActivityLogServices.js');
+const { getLastActivityLog, createActivityLog, updateActivityLog, totalScreenshots, getScreenshots, findActivityLogById } = require('../services/ActivityLogServices.js');
 
 const imageUpload111111 = async (req, res) => {
     try {
@@ -108,28 +108,52 @@ const screenshotUploadold = async (req, res) => {
 
 const screenshotUpload = async (req, res) => {
     try {
-        const { activity, memo } = req.body;
+        const { activity, memo, activityLogId, file } = req.body;
         const userId = req.user.id;
-        const file = req.file;
+
         const folderName = req.body.folderName || 'screenshots'; // Dynamic folder name
 
+        // check File
         if (!file) {
             return res.status(400).json({ message: 'Please select an image' });
         }
+
+        // Parse the base64 image string
+        const matches = file.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
+        if (!matches || matches.length !== 3) {
+            return res.status(400).json({ message: 'Invalid base64 image format' });
+        }
+
+        const buffer = Buffer.from(matches[2], 'base64');
+        const fileName = `screenshot_${Date.now()}`;
+
+        
+        if (!activityLogId) {
+            return res.status(400).json({ message: 'ActivityLog Id field is required' });
+        }
+        const activityLog = await findActivityLogById(activityLogId);
         // const fileName = 
-        const uploadResult = await uploadToCloudinary(file.buffer, file.originalname.split('.')[0], folderName);
+        const uploadResult = await uploadToCloudinary(buffer, fileName, folderName);
+        // const uploadResult = await uploadToCloudinary(file.buffer, file.originalname.split('.')[0], folderName);
 
         if (!uploadResult || !uploadResult.secure_url) {
             throw new Error('Failed to upload image to Cloudinary');
         }
         const screenshot = await createScreenshot({
             user: userId,
+            activityLog: activityLogId,
             image: uploadResult.secure_url, // Cloudinary URL,
             assetId: uploadResult.asset_id,
             size: uploadResult.bytes,
             activityLevel: activity || 0,
-            memo: memo || "Working on Today Task!"
+            memo: memo || "Working on Today Task!",
         })
+
+        // Push the new screenshot reference into the activityLog
+        activityLog.screenshots.push(screenshot._id);
+        await activityLog.save();
+
+
         return res.status(200).json({ message: 'Successfully uploaded file', screenshot });
     } catch (error) {
         console.log("error", error);
@@ -170,6 +194,42 @@ const deleteScreenshot = async (req, res) => {
         return errorResponseMessage(res, "Something went wrong: " + error.message);
     }
 };
+const getAllScreenshotsold = async (req, res) => {
+    const page = parseInt(req.body.page) || 1;
+    const pageSize = parseInt(req.body.pageSize) || 10;
+
+    const skip = (page - 1) * pageSize;
+    const userId = req.user.id;
+
+    const userData = await findUserById(userId)
+
+    try {
+        let users = null;
+        if (userData.userType == ROLES[0]) // ROLES[0] = USER, ROLES[3] =  ADMIN 
+        {
+            // get by user Id
+            totalItems = await totalScreenshots(userId);
+            users = await getScreenshots(userId, skip, pageSize);
+        } else {
+            // Get All Data;
+            totalItems = await totalScreenshots();
+            users = await getScreenshots(skip, pageSize);
+        }
+
+        res.json({
+            data: users,
+            page,
+            pageSize,
+            totalItems,
+            totalPages: Math.ceil(totalItems / pageSize),
+            status: true,
+            message: "get all users"
+        });
+    } catch (error) {
+        return errorResponseMessage(res, "Something went wrong: " + error.message);
+    }
+}
+
 const getAllScreenshots = async (req, res) => {
     const page = parseInt(req.body.page) || 1;
     const pageSize = parseInt(req.body.pageSize) || 10;

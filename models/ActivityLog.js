@@ -31,6 +31,10 @@ const activityLogSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    screenshots: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Screenshot'
+    }]
 }, { timestamps: true, });
 
 
